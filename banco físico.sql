@@ -21,7 +21,7 @@ CREATE TABLE tb_cliente (
 CREATE TABLE tb_telefone_cliente (
 	telefone_cliente varchar(14) not null unique,
 	codigo_cliente integer not null,
-	constraint fk_cliente_telefone foreign key (codigo_cliente) references tb_cliente(codigo_cliente),
+	constraint fk_cliente_telefone foreign key (codigo_cliente) references tb_cliente(codigo_cliente) on update cascade on delete cascade,
 	constraint pk_tb_telefone_cliente primary key (telefone_cliente, codigo_cliente)
 );
 
@@ -39,7 +39,7 @@ CREATE TABLE tb_fornecedor (
 CREATE TABLE tb_telefone_fornecedor (
 	telefone_fornecedor varchar(14) not null UNIQUE,
 	codigo_fornecedor integer not null,
-	constraint fk_fornecedor_telefone foreign key (codigo_fornecedor) references tb_fornecedor(codigo_fornecedor),
+	constraint fk_fornecedor_telefone foreign key (codigo_fornecedor) references tb_fornecedor(codigo_fornecedor) on update cascade on delete cascade,
 	constraint pk_tb_telefone_fornecedor primary key (telefone_fornecedor, codigo_fornecedor)
 );
 
@@ -61,7 +61,7 @@ CREATE TABLE tb_funcionario (
 CREATE TABLE tb_telefone_funcionario (
 	telefone_funcionario varchar(14) not null UNIQUE,
 	matricula integer not null,
-	constraint fk_funcionario_telefone foreign key (matricula) references tb_funcionario(matricula),
+	constraint fk_funcionario_telefone foreign key (matricula) references tb_funcionario(matricula) on update cascade on delete cascade,
 	constraint pk_tb_telefone_funcionario primary key (telefone_funcionario, matricula)
 );
 
@@ -73,15 +73,15 @@ CREATE TABLE tb_produto (
 	data_entrada date not null,
 	matricula integer not null,
 	codigo_fornecedor integer not null,
-	constraint fk_funcionario_produto foreign key (matricula) references tb_funcionario(matricula),
-	constraint fk_fornecedor_produto foreign key (codigo_fornecedor) references tb_fornecedor(codigo_fornecedor),
+	constraint fk_funcionario_produto foreign key (matricula) references tb_funcionario(matricula) on update cascade on delete cascade,
+	constraint fk_fornecedor_produto foreign key (codigo_fornecedor) references tb_fornecedor(codigo_fornecedor) on update cascade on delete cascade,
 	CONSTRAINT CHK_quantidade CHECK (quantidade >= 0)
 );
 
 CREATE TABLE tb_pedido (
 	codigo_pedido integer not null AUTO_INCREMENT primary key UNIQUE,
 	codigo_cliente integer not null,
-	constraint fk_cliente_pedido foreign key (codigo_cliente) references tb_cliente(codigo_cliente)
+	constraint fk_cliente_pedido foreign key (codigo_cliente) references tb_cliente(codigo_cliente) on update cascade on delete cascade
 );
 
 CREATE TABLE  tb_pedido_produto (
@@ -90,8 +90,8 @@ CREATE TABLE  tb_pedido_produto (
 	matricula integer not null,
 	quantidade int not null,
 	data_saida date not null,
-	constraint fk_pedido_pedido_produto foreign key (codigo_pedido) references tb_pedido(codigo_pedido),
-	constraint fk_produto_pedido_produto foreign key (codigo_produto) references tb_produto(codigo_produto),
+	constraint fk_pedido_pedido_produto foreign key (codigo_pedido) references tb_pedido(codigo_pedido) on update cascade on delete cascade,
+	constraint fk_produto_pedido_produto foreign key (codigo_produto) references tb_produto(codigo_produto) on update cascade on delete cascade,
 	constraint pk_tb_pedido_produto primary key (codigo_pedido, codigo_produto),
 	constraint CHK_quantidade_item CHECK (quantidade > 0)
 );
@@ -158,3 +158,37 @@ INSERT INTO tb_pedido_produto (codigo_pedido, codigo_produto, matricula, quantid
 INSERT INTO tb_pedido_produto (codigo_pedido, codigo_produto, matricula, quantidade, data_saida) VALUES (3, 4, 2, 5, '2020-03-27');
 INSERT INTO tb_pedido_produto (codigo_pedido, codigo_produto, matricula, quantidade, data_saida) VALUES (4, 5, 5, 1, '2020-04-06');
 INSERT INTO tb_pedido_produto (codigo_pedido, codigo_produto, matricula, quantidade, data_saida) VALUES (5, 5, 5, 1, '2020-04-16');
+
+/*deletando o vínculo do pedido 1 com o produto 1*/
+delete from tb_pedido_produto where codigo_pedido = 1 and codigo_produto = 1;
+
+/*deletando o cliente de codigo_cliente = 1*/
+delete from tb_cliente where codigo_cliente = 1;
+
+/*deletando o pedido de codigo_pedido = 1*/
+delete from tb_pedido where codigo_pedido = 1;
+
+/*deletando produto de código = 3*/
+delete from tb_produto where codigo_produto = 3;
+
+/*deletando o telefone do funcionário de matricula = 2*/
+delete from tb_telefone_funcionario where matricula = 2;
+
+/*Mudando a data da autorização do pedido 4 do produto 5*/
+UPDATE tb_pedido_produto SET data_saida = '2020-04-07' WHERE codigo_pedido = 4 and codigo_produto = 5;
+
+/*Acrescentando 2 pontos para a quantidade do produto de id = 2*/
+UPDATE tb_produto SET quantidade = quantidade + 2 WHERE codigo_produto = 2;
+
+/*Mudando o telefone do funcionário de matricula = 4*/
+UPDATE tb_telefone_funcionario SET telefone_funcionario = '+5511987349832' WHERE matricula = 4;
+
+/*Mudando o email do funcionário de matricula = 4*/
+UPDATE tb_funcionario SET email = 'pietromartinsg@gmail.com' WHERE matricula = 4;
+
+/*Mudando o telefone do fornecedor de codigo = 1*/
+UPDATE tb_telefone_fornecedor SET telefone_fornecedor = '8135845873' WHERE codigo_fornecedor = 1;
+
+
+
+
