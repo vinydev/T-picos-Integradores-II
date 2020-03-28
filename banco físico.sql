@@ -189,6 +189,19 @@ UPDATE tb_funcionario SET email = 'pietromartinsg@gmail.com' WHERE matricula = 4
 /*Mudando o telefone do fornecedor de codigo = 1*/
 UPDATE tb_telefone_fornecedor SET telefone_fornecedor = '8135845873' WHERE codigo_fornecedor = 1;
 
+/*Listando todos os clientes que são pessoa física e que fizeram pedido*/
+SELECT nome_cliente, cpf from tb_cliente cli, tb_pedido ped WHERE cli.codigo_cliente = ped.codigo_cliente AND cli.tipo_cliente = 'PF';
 
+/*Listando todos os clientes que são pessoa jurídica e que fizeram pedido*/
+SELECT nome_cliente, cnpj from tb_cliente cli, tb_pedido ped WHERE cli.codigo_cliente = ped.codigo_cliente AND cli.tipo_cliente = 'PJ';
 
+/*Listando todos os produtos que todos os clientes que são pessoa física compraram*/
+SELECT cli.nome_cliente, cli.cpf, pro.nome, pro.descricao, pep.quantidade from tb_cliente cli, tb_pedido ped, tb_produto pro, tb_pedido_produto pep WHERE cli.codigo_cliente = ped.codigo_cliente AND cli.tipo_cliente = 'PF'and ped.codigo_pedido = pep.codigo_pedido and pep.codigo_produto = pro.codigo_produto;
 
+/*Listando todos os produtos que todos os clientes que são pessoa jurídica compraram*/
+SELECT cli.nome_cliente, cli.cnpj, pro.nome, pro.descricao, pep.quantidade from tb_cliente cli, tb_pedido ped, tb_produto pro, tb_pedido_produto pep WHERE cli.codigo_cliente = ped.codigo_cliente AND cli.tipo_cliente = 'PJ'and ped.codigo_pedido = pep.codigo_pedido and pep.codigo_produto = pro.codigo_produto;
+
+/*Mostrando o telefone de todos os funcionários chamado Calebe*/
+SELECT fun.nome_funcionario, tel.telefone_funcionario from tb_funcionario fun, tb_telefone_funcionario tel WHERE fun.matricula = tel.matricula and fun.nome_funcionario LIKE 'Calebe%';
+
+ 
