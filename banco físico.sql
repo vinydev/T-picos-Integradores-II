@@ -12,8 +12,8 @@ CREATE TABLE tb_cliente (
 	bairro varchar(40) not null,
 	cidade varchar(40) not null,
 	uf char(2) not null,
-	cpf char(11),
-	cnpj char(14),
+	cpf_cnpj varchar(14) UNIQUE,
+	rg char(7) UNIQUE,
 	tipo_cliente char(2) not null,
 	CONSTRAINT CHK_tipo_cliente CHECK (tipo_cliente = 'PF' or tipo_cliente ='PJ')
 );
@@ -21,7 +21,7 @@ CREATE TABLE tb_cliente (
 CREATE TABLE tb_telefone_cliente (
 	telefone_cliente varchar(14) not null unique,
 	codigo_cliente integer not null,
-	constraint fk_cliente_telefone foreign key (codigo_cliente) references tb_cliente(codigo_cliente) on update cascade on delete cascade,
+	constraint fk_cliente_telefone foreign key (codigo_cliente) references tb_cliente(codigo_cliente) on delete cascade on update cascade,
 	constraint pk_tb_telefone_cliente primary key (telefone_cliente, codigo_cliente)
 );
 
@@ -39,7 +39,7 @@ CREATE TABLE tb_fornecedor (
 CREATE TABLE tb_telefone_fornecedor (
 	telefone_fornecedor varchar(14) not null UNIQUE,
 	codigo_fornecedor integer not null,
-	constraint fk_fornecedor_telefone foreign key (codigo_fornecedor) references tb_fornecedor(codigo_fornecedor) on update cascade on delete cascade,
+	constraint fk_fornecedor_telefone foreign key (codigo_fornecedor) references tb_fornecedor(codigo_fornecedor) on delete cascade on update cascade,
 	constraint pk_tb_telefone_fornecedor primary key (telefone_fornecedor, codigo_fornecedor)
 );
 
@@ -61,7 +61,7 @@ CREATE TABLE tb_funcionario (
 CREATE TABLE tb_telefone_funcionario (
 	telefone_funcionario varchar(14) not null UNIQUE,
 	matricula integer not null,
-	constraint fk_funcionario_telefone foreign key (matricula) references tb_funcionario(matricula) on update cascade on delete cascade,
+	constraint fk_funcionario_telefone foreign key (matricula) references tb_funcionario(matricula) on delete cascade on update cascade,
 	constraint pk_tb_telefone_funcionario primary key (telefone_funcionario, matricula)
 );
 
@@ -73,15 +73,15 @@ CREATE TABLE tb_produto (
 	data_entrada date not null,
 	matricula integer not null,
 	codigo_fornecedor integer not null,
-	constraint fk_funcionario_produto foreign key (matricula) references tb_funcionario(matricula) on update cascade on delete cascade,
-	constraint fk_fornecedor_produto foreign key (codigo_fornecedor) references tb_fornecedor(codigo_fornecedor) on update cascade on delete cascade,
+	constraint fk_funcionario_produto foreign key (matricula) references tb_funcionario(matricula) on delete cascade on update cascade,
+	constraint fk_fornecedor_produto foreign key (codigo_fornecedor) references tb_fornecedor(codigo_fornecedor) on delete cascade on update cascade,
 	CONSTRAINT CHK_quantidade CHECK (quantidade >= 0)
 );
 
 CREATE TABLE tb_pedido (
 	codigo_pedido integer not null AUTO_INCREMENT primary key UNIQUE,
 	codigo_cliente integer not null,
-	constraint fk_cliente_pedido foreign key (codigo_cliente) references tb_cliente(codigo_cliente) on update cascade on delete cascade
+	constraint fk_cliente_pedido foreign key (codigo_cliente) references tb_cliente(codigo_cliente) on delete cascade on update cascade
 );
 
 CREATE TABLE  tb_pedido_produto (
@@ -90,18 +90,18 @@ CREATE TABLE  tb_pedido_produto (
 	matricula integer not null,
 	quantidade int not null,
 	data_saida date not null,
-	constraint fk_pedido_pedido_produto foreign key (codigo_pedido) references tb_pedido(codigo_pedido) on update cascade on delete cascade,
-	constraint fk_produto_pedido_produto foreign key (codigo_produto) references tb_produto(codigo_produto) on update cascade on delete cascade,
+	constraint fk_pedido_pedido_produto foreign key (codigo_pedido) references tb_pedido(codigo_pedido) on delete cascade on update cascade,
+	constraint fk_produto_pedido_produto foreign key (codigo_produto) references tb_produto(codigo_produto) on delete cascade on update cascade,
 	constraint pk_tb_pedido_produto primary key (codigo_pedido, codigo_produto),
 	constraint CHK_quantidade_item CHECK (quantidade > 0)
 );
 
 /*Inserindo dados na tabela tb_cliente*/
-INSERT INTO tb_cliente (nome_cliente, email, cep, logradouro, numero, bairro, cidade, uf, cpf, cnpj, tipo_cliente) VALUES ('Isaac Rodrigues Ferreira', 'isaacrf@gmail.com', '04546001', 'RUA CASA DO ATOR', '275', 'VILA OLÍMPIA', 'SÃO PAULO', 'SP','89087643289',null,'PF');
-INSERT INTO tb_cliente (nome_cliente, email, cep, logradouro, numero, bairro, cidade, uf, cpf, cnpj, tipo_cliente) VALUES ('Accenture', 'accenture@gmail.com', '50030230', 'Edifício Vasco Rodrigues Rua Cais Do Apolo', '222', 'Recife Antigo', 'RECIFE', 'PE', null, '96534094002797', 'PJ');
-INSERT INTO tb_cliente (nome_cliente, email, cep, logradouro, numero, bairro, cidade, uf, cpf, cnpj, tipo_cliente) VALUES ('Avanade', 'avanade@gmail.com', '50030220', 'Rua, Cais do Apolo', '222', 'Recife', 'RECIFE', 'PE', null, '4049976000100', 'PJ');
-INSERT INTO tb_cliente (nome_cliente, email, cep, logradouro, numero, bairro, cidade, uf, cpf, cnpj, tipo_cliente) VALUES ('Pietro Martins da Silva Gomes', 'pietromsg@gmail.com', '04576020', 'RUA GEORGE HOM', '230', 'BROOKLIN NOVO', 'SÃO PAULO', 'SP', '45398763521', null, 'PF');
-INSERT INTO tb_cliente (nome_cliente, email, cep, logradouro, numero, bairro, cidade, uf, cpf, cnpj, tipo_cliente) VALUES ('Helena Kettelin Dias Porto De Oliveira','helenakdpo@gmail.com', '13420640', 'AVENIDA ANTONIA PAZZINATO STURION', '1221', 'JD PETROPOLIS- PIRACICABA', 'SÃO PAULO', 'SP', '78954389787', null, 'PF');
+INSERT INTO tb_cliente (nome_cliente, email, cep, logradouro, numero, bairro, cidade, uf, cpf_cnpj, rg, tipo_cliente) VALUES ('Isaac Rodrigues Ferreira', 'isaacrf@gmail.com', '04546001', 'RUA CASA DO ATOR', '275', 'VILA OLÍMPIA', 'SÃO PAULO', 'SP','89087643289', '3323324', 'PF');
+INSERT INTO tb_cliente (nome_cliente, email, cep, logradouro, numero, bairro, cidade, uf, cpf_cnpj, rg, tipo_cliente) VALUES ('Accenture', 'accenture@gmail.com', '50030230', 'Edifício Vasco Rodrigues Rua Cais Do Apolo', '222', 'Recife Antigo', 'RECIFE', 'PE', '96534094002797', null, 'PJ');
+INSERT INTO tb_cliente (nome_cliente, email, cep, logradouro, numero, bairro, cidade, uf, cpf_cnpj, rg, tipo_cliente) VALUES ('Avanade', 'avanade@gmail.com', '50030220', 'Rua, Cais do Apolo', '222', 'Recife', 'RECIFE', 'PE', '40499760001000', null, 'PJ');
+INSERT INTO tb_cliente (nome_cliente, email, cep, logradouro, numero, bairro, cidade, uf, cpf_cnpj, rg, tipo_cliente) VALUES ('Pietro Martins da Silva Gomes', 'pietromsg@gmail.com', '04576020', 'RUA GEORGE HOM', '230', 'BROOKLIN NOVO', 'SÃO PAULO', 'SP', '45398763521', '3231098', 'PF');
+INSERT INTO tb_cliente (nome_cliente, email, cep, logradouro, numero, bairro, cidade, uf, cpf_cnpj, rg, tipo_cliente) VALUES ('Helena Kettelin Dias Porto De Oliveira','helenakdpo@gmail.com', '13420640', 'AVENIDA ANTONIA PAZZINATO STURION', '1221', 'JD PETROPOLIS- PIRACICABA', 'SÃO PAULO', 'SP', '78954389787', '0929332', 'PF');
 
 /*Inserindo dados na tabela tb_telefone_cliente*/
 INSERT INTO tb_telefone_cliente (telefone_cliente, codigo_cliente) VALUES ('+5511987965467',1);
@@ -190,16 +190,16 @@ UPDATE tb_funcionario SET email = 'pietromartinsg@gmail.com' WHERE matricula = 4
 UPDATE tb_telefone_fornecedor SET telefone_fornecedor = '8135845873' WHERE codigo_fornecedor = 1;
 
 /*Listando todos os clientes que são pessoa física e que fizeram pedido*/
-SELECT nome_cliente, cpf from tb_cliente cli, tb_pedido ped WHERE cli.codigo_cliente = ped.codigo_cliente AND cli.tipo_cliente = 'PF';
+SELECT nome_cliente, cpf_cnpj as cpf from tb_cliente cli, tb_pedido ped WHERE cli.codigo_cliente = ped.codigo_cliente AND cli.tipo_cliente = 'PF';
 
 /*Listando todos os clientes que são pessoa jurídica e que fizeram pedido*/
-SELECT nome_cliente, cnpj from tb_cliente cli, tb_pedido ped WHERE cli.codigo_cliente = ped.codigo_cliente AND cli.tipo_cliente = 'PJ';
+SELECT nome_cliente, cpf_cnpj as cnpj from tb_cliente cli, tb_pedido ped WHERE cli.codigo_cliente = ped.codigo_cliente AND cli.tipo_cliente = 'PJ';
 
 /*Listando todos os produtos que todos os clientes que são pessoa física compraram*/
-SELECT cli.nome_cliente, cli.cpf, pro.nome, pro.descricao, pep.quantidade from tb_cliente cli, tb_pedido ped, tb_produto pro, tb_pedido_produto pep WHERE cli.codigo_cliente = ped.codigo_cliente AND cli.tipo_cliente = 'PF'and ped.codigo_pedido = pep.codigo_pedido and pep.codigo_produto = pro.codigo_produto;
+SELECT cli.nome_cliente, cli.cpf_cnpj as cpf, pro.nome, pro.descricao, pep.quantidade from tb_cliente cli, tb_pedido ped, tb_produto pro, tb_pedido_produto pep WHERE cli.codigo_cliente = ped.codigo_cliente AND cli.tipo_cliente = 'PF'and ped.codigo_pedido = pep.codigo_pedido and pep.codigo_produto = pro.codigo_produto;
 
 /*Listando todos os produtos que todos os clientes que são pessoa jurídica compraram*/
-SELECT cli.nome_cliente, cli.cnpj, pro.nome, pro.descricao, pep.quantidade from tb_cliente cli, tb_pedido ped, tb_produto pro, tb_pedido_produto pep WHERE cli.codigo_cliente = ped.codigo_cliente AND cli.tipo_cliente = 'PJ'and ped.codigo_pedido = pep.codigo_pedido and pep.codigo_produto = pro.codigo_produto;
+SELECT cli.nome_cliente, cli.cpf_cnpj as cnpj, pro.nome, pro.descricao, pep.quantidade from tb_cliente cli, tb_pedido ped, tb_produto pro, tb_pedido_produto pep WHERE cli.codigo_cliente = ped.codigo_cliente AND cli.tipo_cliente = 'PJ'and ped.codigo_pedido = pep.codigo_pedido and pep.codigo_produto = pro.codigo_produto;
 
 /*Mostrando o telefone de todos os funcionários chamado Calebe*/
 SELECT fun.nome_funcionario, tel.telefone_funcionario from tb_funcionario fun, tb_telefone_funcionario tel WHERE fun.matricula = tel.matricula and fun.nome_funcionario LIKE 'Calebe%';
