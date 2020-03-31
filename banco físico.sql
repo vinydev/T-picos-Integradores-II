@@ -28,6 +28,7 @@ CREATE TABLE tb_telefone_cliente (
 CREATE TABLE tb_fornecedor (
 	codigo_fornecedor integer not null AUTO_INCREMENT primary key UNIQUE,
 	nome varchar(60) not null,
+	email varchar(50) not null UNIQUE,
 	cep char(8) not null,
 	logradouro varchar(50) not null,
 	numero varchar(8) not null,
@@ -111,11 +112,11 @@ INSERT INTO tb_telefone_cliente (telefone_cliente, codigo_cliente) VALUES ('+551
 INSERT INTO tb_telefone_cliente (telefone_cliente, codigo_cliente) VALUES ('+5511998765678',5);
 
 /*Inserindo dados na tabela tb_fornecedor*/
-INSERT INTO tb_fornecedor (nome, cep, logradouro, numero, bairro, cidade, uf) VALUES ('Celite', '50950000', 'Rua João Lopes', '10', 'Curado', 'Recife', 'PE');
-INSERT INTO tb_fornecedor (nome, cep, logradouro, numero, bairro, cidade, uf) VALUES ('Eternit', '53635745', 'R. Alameda dos Cravos', '20', 'Cruz de Rebouças', 'Igarassu', 'PE');
-INSERT INTO tb_fornecedor (nome, cep, logradouro, numero, bairro, cidade, uf) VALUES ('Deca', '51180020', 'Rua Madrid', '190', 'Imbiribeira', 'Recife', 'PE');
-INSERT INTO tb_fornecedor (nome, cep, logradouro, numero, bairro, cidade, uf) VALUES ('Pial', '54340320', 'Rodovia Antiga', '2141', 'Prazeres', 'Jaboatão dos Guararapes', 'PE');
-INSERT INTO tb_fornecedor (nome, cep, logradouro, numero, bairro, cidade, uf) VALUES ('Botafogo', '22290040', 'Av. Venceslau Brás', '72', 'Botafogo', 'Rio de Janeiro', 'RJ');
+INSERT INTO tb_fornecedor (nome, email, cep, logradouro, numero, bairro, cidade, uf) VALUES ('Celite', 'celite@gmail.com', '50950000', 'Rua João Lopes', '10', 'Curado', 'Recife', 'PE');
+INSERT INTO tb_fornecedor (nome, email, cep, logradouro, numero, bairro, cidade, uf) VALUES ('Eternit','eternit@gmail.com', '53635745', 'R. Alameda dos Cravos', '20', 'Cruz de Rebouças', 'Igarassu', 'PE');
+INSERT INTO tb_fornecedor (nome, email, cep, logradouro, numero, bairro, cidade, uf) VALUES ('Deca', 'deca@gmail.com', '51180020', 'Rua Madrid', '190', 'Imbiribeira', 'Recife', 'PE');
+INSERT INTO tb_fornecedor (nome, email, cep, logradouro, numero, bairro, cidade, uf) VALUES ('Pial', 'pial@gmail.com', '54340320', 'Rodovia Antiga', '2141', 'Prazeres', 'Jaboatão dos Guararapes', 'PE');
+INSERT INTO tb_fornecedor (nome, email, cep, logradouro, numero, bairro, cidade, uf) VALUES ('Botafogo', 'botafogo@gmail.com', '22290040', 'Av. Venceslau Brás', '72', 'Botafogo', 'Rio de Janeiro', 'RJ');
 
 /*Inserindo dados na tabela tb_telefone_fornecedor*/
 INSERT INTO tb_telefone_fornecedor (telefone_fornecedor, codigo_fornecedor) VALUES ('8134568790', 1);
