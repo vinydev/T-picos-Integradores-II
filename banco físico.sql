@@ -82,6 +82,7 @@ CREATE TABLE tb_produto (
 CREATE TABLE tb_pedido (
 	codigo_pedido integer not null AUTO_INCREMENT primary key UNIQUE,
 	codigo_cliente integer not null,
+	data_pedido date not null,
 	constraint fk_cliente_pedido foreign key (codigo_cliente) references tb_cliente(codigo_cliente) on delete cascade on update cascade
 );
 
@@ -147,11 +148,11 @@ INSERT INTO tb_produto (nome, descricao, quantidade, data_entrada, matricula, co
 INSERT INTO tb_produto (nome, descricao, quantidade, data_entrada, matricula, codigo_fornecedor) VALUES ('Escada Botafogo', 'Banco Escada em Alumínio 3 Degraus Prata',10,'2020-03-26', 2, 5);
 
 /*Inserindo dados na tabela tb_pedido*/
-INSERT INTO tb_pedido (codigo_cliente) VALUES (2);
-INSERT INTO tb_pedido (codigo_cliente) VALUES (2);
-INSERT INTO tb_pedido (codigo_cliente) VALUES (1);
-INSERT INTO tb_pedido (codigo_cliente) VALUES (3);
-INSERT INTO tb_pedido (codigo_cliente) VALUES (5);
+INSERT INTO tb_pedido (codigo_cliente, data_pedido) VALUES (2, '2020-01-20');
+INSERT INTO tb_pedido (codigo_cliente, data_pedido) VALUES (2, '2020-01-19');
+INSERT INTO tb_pedido (codigo_cliente, data_pedido) VALUES (1, '2020-03-27');
+INSERT INTO tb_pedido (codigo_cliente, data_pedido) VALUES (3, '2020-04-06');
+INSERT INTO tb_pedido (codigo_cliente, data_pedido) VALUES (5, '2020-04-16');
 
 /*Inserindo dados na tabela tb_pedido_produto*/
 INSERT INTO tb_pedido_produto (codigo_pedido, codigo_produto, matricula, quantidade, data_saida) VALUES (1, 1, 4, 1, '2020-03-31');
@@ -160,49 +161,19 @@ INSERT INTO tb_pedido_produto (codigo_pedido, codigo_produto, matricula, quantid
 INSERT INTO tb_pedido_produto (codigo_pedido, codigo_produto, matricula, quantidade, data_saida) VALUES (4, 5, 5, 1, '2020-04-06');
 INSERT INTO tb_pedido_produto (codigo_pedido, codigo_produto, matricula, quantidade, data_saida) VALUES (5, 5, 5, 1, '2020-04-16');
 
-/*deletando o vínculo do pedido 1 com o produto 1*/
-delete from tb_pedido_produto where codigo_pedido = 1 and codigo_produto = 1;
+/* 1 - Listar do produto: nome, nome do fornecedor e quantidade em estoque. */
+select pro.nome as nome_produto, pro.quantidade as quantidade_estoque, forn.nome as nome_fornecedor from tb_produto pro, tb_fornecedor forn WHERE forn.codigo_fornecedor = pro.codigo_fornecedor;
 
-/*deletando o cliente de codigo_cliente = 1*/
-delete from tb_cliente where codigo_cliente = 1;
+/* 2 - Informar a quantidade de pedidos realizados por nome do cliente no mês de janeiro de 2020 */
+select cli.nome_cliente, count(ped.data_pedido) as quantidade_pedido from tb_cliente cli, tb_pedido ped where cli.codigo_cliente = ped.codigo_cliente and ped.data_pedido BETWEEN '2020-01-01' and '2020-01-31' GROUP by cli.nome_cliente;
 
-/*deletando o pedido de codigo_pedido = 1*/
-delete from tb_pedido where codigo_pedido = 1;
+/* 3 - Informar qua quantidade de autorizações geradas por funcionário. */
+select fun.matricula as matricula_funcionario, fun.nome_funcionario, count(pep.data_saida) from tb_funcionario fun, tb_pedido_produto pep where fun.matricula = pep.matricula group by fun.matricula;
 
-/*deletando produto de código = 3*/
-delete from tb_produto where codigo_produto = 3;
+/* 4 - Listar os funcionários: nome, email, matricula, cpf e rg, ordenando pelo nome. */
+select nome_funcionario, matricula, cpf, rg, email from tb_funcionario order by nome_funcionario;
 
-/*deletando o telefone do funcionário de matricula = 2*/
-delete from tb_telefone_funcionario where matricula = 2;
-
-/*Mudando a data da autorização do pedido 4 do produto 5*/
-UPDATE tb_pedido_produto SET data_saida = '2020-04-07' WHERE codigo_pedido = 4 and codigo_produto = 5;
-
-/*Acrescentando 2 pontos para a quantidade do produto de id = 2*/
-UPDATE tb_produto SET quantidade = quantidade + 2 WHERE codigo_produto = 2;
-
-/*Mudando o telefone do funcionário de matricula = 4*/
-UPDATE tb_telefone_funcionario SET telefone_funcionario = '+5511987349832' WHERE matricula = 4;
-
-/*Mudando o email do funcionário de matricula = 4*/
-UPDATE tb_funcionario SET email = 'pietromartinsg@gmail.com' WHERE matricula = 4;
-
-/*Mudando o telefone do fornecedor de codigo = 1*/
-UPDATE tb_telefone_fornecedor SET telefone_fornecedor = '8135845873' WHERE codigo_fornecedor = 1;
-
-/*Listando todos os clientes que são pessoa física e que fizeram pedido*/
-SELECT nome_cliente, cpf_cnpj as cpf from tb_cliente cli, tb_pedido ped WHERE cli.codigo_cliente = ped.codigo_cliente AND cli.tipo_cliente = 'PF';
-
-/*Listando todos os clientes que são pessoa jurídica e que fizeram pedido*/
-SELECT nome_cliente, cpf_cnpj as cnpj from tb_cliente cli, tb_pedido ped WHERE cli.codigo_cliente = ped.codigo_cliente AND cli.tipo_cliente = 'PJ';
-
-/*Listando todos os produtos que todos os clientes que são pessoa física compraram*/
-SELECT cli.nome_cliente, cli.cpf_cnpj as cpf, pro.nome, pro.descricao, pep.quantidade from tb_cliente cli, tb_pedido ped, tb_produto pro, tb_pedido_produto pep WHERE cli.codigo_cliente = ped.codigo_cliente AND cli.tipo_cliente = 'PF'and ped.codigo_pedido = pep.codigo_pedido and pep.codigo_produto = pro.codigo_produto;
-
-/*Listando todos os produtos que todos os clientes que são pessoa jurídica compraram*/
-SELECT cli.nome_cliente, cli.cpf_cnpj as cnpj, pro.nome, pro.descricao, pep.quantidade from tb_cliente cli, tb_pedido ped, tb_produto pro, tb_pedido_produto pep WHERE cli.codigo_cliente = ped.codigo_cliente AND cli.tipo_cliente = 'PJ'and ped.codigo_pedido = pep.codigo_pedido and pep.codigo_produto = pro.codigo_produto;
-
-/*Mostrando o telefone de todos os funcionários chamado Calebe*/
-SELECT fun.nome_funcionario, tel.telefone_funcionario from tb_funcionario fun, tb_telefone_funcionario tel WHERE fun.matricula = tel.matricula and fun.nome_funcionario LIKE 'Calebe%';
+/* 5 - Infomar a quantidade de produtos por fornecedor. */
+SELECT forn.codigo_fornecedor, forn.nome as nome_fornecedor, sum(pro.quantidade)*count(pro.quantidade) as quantidade_de_produto from tb_fornecedor forn, tb_produto pro where pro.codigo_fornecedor = forn.codigo_fornecedor GROUP BY forn.codigo_fornecedor;
 
  
