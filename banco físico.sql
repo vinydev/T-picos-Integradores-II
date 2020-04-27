@@ -168,7 +168,7 @@ select pro.nome as nome_produto, pro.quantidade as quantidade_estoque, forn.nome
 select cli.nome_cliente, count(ped.data_pedido) as quantidade_pedido from tb_cliente cli, tb_pedido ped where cli.codigo_cliente = ped.codigo_cliente and ped.data_pedido BETWEEN '2020-01-01' and '2020-01-31' GROUP by cli.nome_cliente;
 
 /* 3 - Informar qua quantidade de autorizações geradas por funcionário. */
-select fun.matricula as matricula_funcionario, fun.nome_funcionario, count(pep.data_saida) from tb_funcionario fun, tb_pedido_produto pep where fun.matricula = pep.matricula group by fun.matricula;
+select fun.matricula as matricula_funcionario, fun.nome_funcionario, count(pep.data_saida) as quantidade_autorizacoes from tb_funcionario fun, tb_pedido_produto pep where fun.matricula = pep.matricula group by fun.matricula;
 
 /* 4 - Listar os funcionários: nome, email, matricula, cpf e rg, ordenando pelo nome. */
 select nome_funcionario, matricula, cpf, rg, email from tb_funcionario order by nome_funcionario;
